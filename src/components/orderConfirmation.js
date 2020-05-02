@@ -51,7 +51,7 @@ const Confirmation = props => {
       if (!err) {
         AxiosAuth()
           .put(
-            `https://shopping-cart-eu3.herokuapp.com/api/store/cart/${cartId}/approve`,
+            `https://devshop-be.herokuapp.com/api/store/cart/${cartId}/approve`,
             payload
           )
           .then(res => {
@@ -82,7 +82,7 @@ const Confirmation = props => {
     }
     axios
       .put(
-        'https://shopping-cart-eu3.herokuapp.com/api/payment/complete',
+        'https://devshop-be.herokuapp.com/api/payment/complete',
         payload
       )
       .then(res => {

@@ -5,6 +5,7 @@ import { Button, message } from 'antd'
 import { useSelector, useDispatch } from 'react-redux'
 import * as creators from '../../state/actionCreators'
 import NoLogo from '../../images/PureRetail_Logo.png'
+import Nav from '../elements/nav'
 
 
 const Dashboard = () => {
@@ -25,6 +26,9 @@ const Dashboard = () => {
   }
   return (
     <div className='mainDiv'>
+      <div id='navDiv'>
+        <Nav />
+      </div>
       <div className='dashboardHeader'>
         <div className='welcomeHeader'>
           Welcome, <br />

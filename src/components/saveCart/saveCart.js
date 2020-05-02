@@ -55,7 +55,7 @@ const SaveCart = props => {
         }
         axios
           .post(
-            `https://shopping-cart-eu3.herokuapp.com/api/store/${sellerId}/cart/submit`,
+            `https://devshop-be.herokuapp.com/api/store/${sellerId}/cart/submit`,
             payload
           )
           .then(res => {

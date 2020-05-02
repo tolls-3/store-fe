@@ -4,10 +4,10 @@ import axios from 'axios'
 import Nav from '../elements/nav'
 import withAuth from '../Auth/axiosWithAuth'
 
-const storeURL = 'https://shopping-cart-eu3.herokuapp.com/api/store'
-const stripeURL = 'https://shopping-cart-eu3.herokuapp.com/api/auth/stripe'
+const storeURL = 'https://devshop-be.herokuapp.com/api/store'
+const stripeURL = 'https://devshop-be.herokuapp.com/api/auth/stripe'
 
-function Account () {
+function Account() {
   const [stripeId, setStripeId] = useState('')
   const [storeId, setStoreId] = useState('')
   useEffect(() => {
@@ -36,6 +36,7 @@ function Account () {
 
   return (
     <div className='seller-account'>
+      <Nav />
       <div className='main'>
         <h2>Account</h2>
         <Card
@@ -50,10 +51,9 @@ function Account () {
         {stripeId ? (
           <Button onClick={connectStripe}>Change Stripe Id</Button>
         ) : (
-          <Button onClick={connectStripe}>Connect to Stripe</Button>
-        )}
+            <Button onClick={connectStripe}>Connect to Stripe</Button>
+          )}
       </div>
-      <Nav />
     </div>
   )
 }

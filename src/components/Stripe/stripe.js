@@ -39,7 +39,7 @@ const Stripe = props => {
 
   useEffect(() => {
     axios
-      .post('https://shopping-cart-eu3.herokuapp.com/api/payment/charge', {
+      .post('https://devshop-be.herokuapp.com/api/payment/charge', {
         amount: cartContents.agreedPrice
           ? cartContents.agreedPrice.toFixed(2)
           : 0,

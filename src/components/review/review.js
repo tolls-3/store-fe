@@ -68,7 +68,7 @@ const ReviewMain = props => {
         }
         axios
           .post(
-            `https://shopping-cart-eu3.herokuapp.com/api/store/${sellerId}/cart`,
+            `https://devshop-be.herokuapp.com/api/store/${sellerId}/cart`,
             payload
           )
           .then(res => {

@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { Form, Input, Icon, Button, message, Upload, Spin } from 'antd'
-import axios from 'axios'
+import React, { useEffect } from 'react'
+import { Form, Input, Button, message, Spin } from 'antd'
 import AxiosAuth from '../Auth/axiosWithAuth'
 import history from '../../history'
 import { connect, useSelector } from 'react-redux'
@@ -12,30 +11,12 @@ import {
 } from '../../state/actionCreators'
 import useCurrency from '../hooks/useCurrency'
 
-const productURL = 'https://shopping-cart-eu3.herokuapp.com/api/store/products'
+const productURL = 'https://devshop-be.herokuapp.com/api/store/products'
 
-function CreateItem ({ dispatch, form, isLoading }) {
-  const [fileList, setFileList] = useState([])
-  const [cloudList, setCloudList] = useState([])
+function CreateItem({ dispatch, form, isLoading }) {
+
   const { TextArea } = Input
-  const handleChange = info => {
-    let fileList = [...info.fileList]
 
-    // 1. Limit the number of uploaded files
-    // Only to show two recent uploaded files, and old ones will be replaced by the new
-    fileList = fileList.slice(-4)
-
-    // 2. Read from response and show file link
-    fileList = fileList.map(file => {
-      if (file.response) {
-        // Component will show file.url as link
-        file.url = file.response.url
-      }
-      return file
-    })
-
-    setFileList(fileList)
-  }
 
   useEffect(() => {
     dispatch(getCurrentUser())
@@ -45,24 +26,6 @@ function CreateItem ({ dispatch, form, isLoading }) {
 
   const sign = useCurrency(currencyDescription)
 
-  const dummyRequest = ({ file, onSuccess }) => {
-    const image = new FormData()
-    image.append('upload_preset', 'pure-retail')
-    image.append('file', file)
-    const config = {
-      headers: { 'X-Requested-With': 'XMLHttpRequest' }
-    }
-    axios
-      .post('https://api.cloudinary.com/v1_1/pureretail/upload', image, config)
-      .then(res => {
-        const secureUrl = res.data.secure_url
-        const newList = [...cloudList, secureUrl]
-        setCloudList(newList)
-      })
-    setTimeout(() => {
-      onSuccess('ok')
-    }, 0)
-  }
 
   useEffect(() => {
     dispatch(setLoading(false))
@@ -70,13 +33,8 @@ function CreateItem ({ dispatch, form, isLoading }) {
 
   const handleSubmit = e => {
     e.preventDefault()
-    if (!cloudList.length) {
-      return message.error('Upload an image')
-    }
+
     form.validateFieldsAndScroll((err, values) => {
-      if (isNaN(values.stock && +values.stock)) {
-        return message.error('Stock should be a number')
-      }
       if (isNaN(+values.price)) {
         return message.error('Enter a valid price')
       }
@@ -85,8 +43,7 @@ function CreateItem ({ dispatch, form, isLoading }) {
         name: values.name.trim(),
         description: values.description.trim(),
         price: values.price,
-        stock: values.stock || 0,
-        images: cloudList
+
       }
       if (!err) {
         dispatch(setLoading(true))
@@ -149,17 +106,6 @@ function CreateItem ({ dispatch, form, isLoading }) {
             store item
           </h2>
         </div>
-        <div id='uploadHead' style={{ height: '30%', width: '100%' }}>
-          <Upload
-            style={{ height: '20%', width: '20%' }}
-            listType='picture-card'
-            fileList={fileList}
-            customRequest={dummyRequest}
-            onChange={handleChange}
-          >
-            <Icon style={{ width: '20px' }} type='upload' />
-          </Upload>
-        </div>
         <Form className='inputForm' {...formItemLayout} onSubmit={handleSubmit}>
           <Form.Item>
             {getFieldDecorator('name', {
@@ -187,16 +133,6 @@ function CreateItem ({ dispatch, form, isLoading }) {
                 }
               ]
             })(<Input placeholder='Price' addonBefore={sign} />)}
-          </Form.Item>
-
-          <Form.Item>
-            {getFieldDecorator('stock', {
-              rules: [
-                {
-                  message: 'Enter stock'
-                }
-              ]
-            })(<Input placeholder='Stock' />)}
           </Form.Item>
           <Form.Item>
             {getFieldDecorator('description', {

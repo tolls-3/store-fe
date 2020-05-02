@@ -15,7 +15,7 @@ function SingleProductView (props) {
     dispatch(creators.setLoading(true))
     axios
       .get(
-        `https://shopping-cart-eu3.herokuapp.com/api/store/products/${itemId}`
+        `https://devshop-be.herokuapp.com/api/store/products/${itemId}`
       )
       .then(res => {
         setProductState(res.data)

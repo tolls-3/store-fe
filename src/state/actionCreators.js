@@ -30,7 +30,7 @@ export const getCurrentUser = () => dispatch => {
 
 export const getCart = cartId => dispatch => {
   axios
-    .get(`https://shopping-cart-eu3.herokuapp.com/api/store/cart/${cartId}`)
+    .get(`https://devshop-be.herokuapp.com/api/store/cart/${cartId}`)
     .then(res => {
       const savedCart = res.data
       dispatch({ type: types.SAVE_CART, payload: savedCart })
@@ -120,37 +120,11 @@ export const clearUser = () => {
   }
 }
 
-export const deleteStore = () => dispatch => {
-  AxiosAuth()
-    .delete('https://shopping-cart-eu3.herokuapp.com/api/store')
-    .then(res => {
-      const message = res.data
-      setLoading(true)
-      clearStore()
-      dispatch({ type: types.DELETE_STORE, payload: message })
-    })
-    .catch(err => {
-      setErrors(err.response.data)
-    })
-}
-
-export const deleteAccount = () => dispatch => {
-  setLoading(true)
-  AxiosAuth()
-    .delete('https://shopping-cart-eu3.herokuapp.com/api/auth/account')
-    .then(res => {
-      logout()
-      dispatch({ type: types.DELETE_ACCOUNT })
-    })
-    .catch(err => {
-      setErrors(err.response.data)
-    })
-}
 
 export const getProducts = (sellerId, signal) => dispatch => {
   axios
     .get(
-      `https://shopping-cart-eu3.herokuapp.com/api/store/${sellerId}/products`
+      `https://devshop-be.herokuapp.com/api/store/${sellerId}/products`
     )
     .then(res => {
       const inventory = res.data
@@ -163,7 +137,7 @@ export const getProducts = (sellerId, signal) => dispatch => {
 
 export const getStore = (sellerId, signal) => dispatch => {
   axios
-    .get(`https://shopping-cart-eu3.herokuapp.com/api/store/${sellerId}`)
+    .get(`https://devshop-be.herokuapp.com/api/store/${sellerId}`)
     .then(res => {
       dispatch({ type: types.GET_CURRENT_USER, payload: res.data })
     })
@@ -189,7 +163,7 @@ export const saveCart = cart => {
 export const getSalesHistory = () => dispatch => {
   setLoading(true)
   AxiosAuth()
-    .get('https://shopping-cart-eu3.herokuapp.com/api/store/sales')
+    .get('https://devshop-be.herokuapp.com/api/store/sales')
     .then(res => {
       setLoading(false)
       dispatch({ type: types.GET_SALES_HISTORY, payload: res.data })
