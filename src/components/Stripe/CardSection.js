@@ -21,7 +21,7 @@ const CardSection = () => {
   return (
     <label>
       Card details
-      <CardElement className='MyCardElement' style={style} />
+      <CardElement className='cardNumber' style={style} />
     </label>
   )
 }

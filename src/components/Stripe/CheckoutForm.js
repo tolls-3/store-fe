@@ -12,6 +12,7 @@ const CheckoutForm = (props) => {
 
     // See our confirmCardPayment documentation for more:
     // https://stripe.com/docs/stripe-js/reference#stripe-confirm-card-payment
+    console.log('hey', props.clientId)
     props.stripe.confirmCardPayment(props.clientId, {
       payment_method: {
         card: props.elements.getElement('card'),
@@ -25,7 +26,7 @@ const CheckoutForm = (props) => {
         cartId: props.cartId
       }
       if (res.paymentIntent) {
-        axios.put('https://shopping-cart-eu3.herokuapp.com/api/payment/complete', payload)
+        axios.put('https://devshop-be.herokuapp.com/api/payment/complete', payload)
           .then(res => {
             history.push('/success')
           })

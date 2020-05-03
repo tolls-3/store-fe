@@ -13,22 +13,35 @@ const { Panel } = Collapse
 
 const Stripe = props => {
   const { cartId } = props
+  const [savedCar, setSavedCar] = useState('')
   const [clientId, setClientId] = useState('')
   const [stripeId, setStripeId] = useState('')
-  const cartContents = useSelector(state => state.savedCart)
+  //const savedCar = useSelector(state => state.savedCart)
   const store = useSelector(state => state.user.user)
-  const savedDate = new Date(cartContents.checkoutDate || 0)
-  const sign = useCurrency(cartContents.currency)
+  const savedDate = new Date(savedCar.checkoutDate || 0)
+  const sign = useCurrency(savedCar.currency)
   const dispatch = useDispatch()
 
   // dispatch(creators.getStore(cartContents.storeId))
+  
+  useEffect(() => {
+    axios
+      .get(`https://devshop-be.herokuapp.com/api/store/cart/${cartId}`)
+      .then(res => {
+        setSavedCar(res.data)
+
+      })
+      .catch(error => {
+        console.log(error)
+      })
+  }, [cartId])
   useEffect(() => {
     dispatch(creators.getCart(cartId))
   }, [dispatch, cartId])
 
   useEffect(() => {
-    dispatch(creators.getStore(cartContents.storeId))
-  }, [dispatch, cartContents])
+    dispatch(creators.getStore(savedCar.storeId))
+  }, [dispatch, savedCar])
 
   const url = `/store/${store &&
     store.storeName &&
@@ -40,19 +53,20 @@ const Stripe = props => {
   useEffect(() => {
     axios
       .post('https://devshop-be.herokuapp.com/api/payment/charge', {
-        amount: cartContents.agreedPrice
-          ? cartContents.agreedPrice.toFixed(2)
+        amount: savedCar.agreedPrice
+          ? savedCar.agreedPrice.toFixed(2)
           : 0,
-        storeId: cartContents.storeId
+        storeId: "5eac6621b882d81f60b6f632"
       })
       .then(res => {
+    
         setClientId(res.data.paymentIntent.client_secret)
         setStripeId(res.data.stripeId)
       })
       .catch(err => {
         console.log(err)
       })
-  }, [stripeId, cartContents])
+  }, [stripeId, savedCar])
   return (
     <div className='payments-cover'>
       <div className='checkout'>
@@ -60,9 +74,9 @@ const Stripe = props => {
         <div className='order'>
           <p>Order Summary</p>
           <div className='summary'>
-            {cartContents.contents &&
-              cartContents.contents.length &&
-              cartContents.contents.map(item => (
+            {savedCar.contents &&
+              savedCar.contents.length &&
+              savedCar.contents.map(item => (
                 <div className='units stop' key={item._id}>
                   {item.name} ({item.quantity} unit
                   {item.quantity > 1 ? 's' : ''}) -{' '}
@@ -78,22 +92,22 @@ const Stripe = props => {
               <span style={{ color: '#FF6663' }}>Total:</span>{' '}
               <span>
                 {sign}
-                {cartContents.total ? cartContents.total.toFixed(2) : 0}
+                {savedCar.total ? savedCar.total.toFixed(2) : 0}
               </span>
             </div>
             <div className='units'>
               <span style={{ color: '#FF6663' }}>Agreed price:</span>{' '}
               <span>
                 {sign}
-                {cartContents.agreedPrice
-                  ? cartContents.agreedPrice.toFixed(2)
+                {savedCar.agreedPrice
+                  ? savedCar.agreedPrice.toFixed(2)
                   : 0}
               </span>
             </div>
-            {/* <div className='units'><span style={{ color: '#FF6663' }}>Delivery preference:</span> <span>{cartContents.delivery}</span></div> */}
+            {/* <div className='units'><span style={{ color: '#FF6663' }}>Delivery preference:</span> <span>{savedCar.delivery}</span></div> */}
             <div className='units'>
               <span style={{ color: '#FF6663' }}>Payment preference:</span>{' '}
-              <span>{cartContents.paymentPreference}</span>
+              <span>{savedCar.paymentPreference}</span>
             </div>
             <div className='units'>
               <span style={{ color: '#FF6663' }}>Date saved:</span>{' '}
@@ -108,29 +122,27 @@ const Stripe = props => {
           Payment is enabled when cart is confirmed
         </div>
         <Collapse accordion>
-          {stripeId ? (
+          {(
             <Panel
               header='Pay with card'
               key='1'
-              disabled={!cartContents.finalLock}
             >
               <StripeProvider
-                apiKey='pk_test_H8Ph7y3z5k1zPreo3Hu2i94Q00LVbX4bY3'
+                apiKey='pk_test_6pBqSOnZHQbQqNU4baLuq8xM00RS0NxI6b'
                 stripeAccount={stripeId}
               >
                 <MyStoreCheckout clientId={clientId} cartId={cartId} />
               </StripeProvider>
             </Panel>
-          ) : null}
+          )}
           <Panel
             header='Pay with USSD'
             key='2'
-            disabled={!cartContents.finalLock}
           >
             <div className='cash-text'>
               Transfer {sign}
-              {cartContents.agreedPrice
-                ? cartContents.agreedPrice.toFixed(2)
+              {savedCar.agreedPrice
+                ? savedCar.agreedPrice.toFixed(2)
                 : 0}{' '}
               to the seller, and once they confirm receipt, you’ll be redirected
               automatically to the order confirmation page. (Note: the speed of
@@ -141,7 +153,6 @@ const Stripe = props => {
           <Panel
             header='Pay in person'
             key='3'
-            disabled={!cartContents.finalLock}
           >
             <div className='cash-text'>
               Please note that payment in person depends entirely on the
@@ -165,7 +176,7 @@ const Stripe = props => {
           </Panel>
         </Collapse>
         <div className='save'>
-          <NavLink to={`/store/${cartContents.storeId}`}>
+          <NavLink to={`/store/${savedCar.storeId}`}>
             <div className='save-btn'>Abort Transaction</div>
           </NavLink>
           {/* <div style={{ backgroundColor: '#FF6663' }} className='save-btn'>

@@ -26,9 +26,7 @@ const ReviewMain = props => {
   const removeItem = item => {
     dispatch(creators.subtractFromCart(item))
   }
-  const showModal = () => {
-    setIsVisible(true)
-  }
+ 
   const handleCancel = () => {
     setIsVisible(false)
   }
@@ -140,13 +138,6 @@ const ReviewMain = props => {
           />
           {cartContents.length > 0 ? (
             <div className='button-body'>
-              <div
-                onClick={showModal}
-                style={{ backgroundColor: '#0B3954' }}
-                className='button'
-              >
-                Save for later
-              </div>
               <AddEmail
                 ref={saveFormRef}
                 visible={isVisible}

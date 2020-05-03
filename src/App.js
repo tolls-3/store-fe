@@ -18,8 +18,6 @@ import OrderSuccessPage from './components/Stripe/OrderSuccessPage'
 import Single from './components/singleProduct/index'
 import SaveCartMain from './components/saveCart'
 import Account from './components/SellerAccount/SellerAccount'
-import Confirmation from './components/orderConfirmation'
-
 
 function App() {
   return (
@@ -29,7 +27,7 @@ function App() {
         <PublicRoute exact path='/' component={LoginForm} />
         <PrivateRoute path='/inventory' component={Main} />
         <PublicRoute path='/store/:id' component={Store} />
-        <PublicRoute path='/cart/:id' component={localStorage.getItem('token') ? Confirmation : StripeMain} />
+        <PublicRoute path='/cart/:id' component={StripeMain} />
         <PublicRoute path='/review' component={Review} />
         <PublicRoute path='/savecart' component={SaveCartMain} />
         <PrivateRoute path='/createstore' component={CreateStoreForm} />

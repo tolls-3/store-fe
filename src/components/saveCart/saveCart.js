@@ -4,6 +4,9 @@ import { Form, Input, Button, Radio, DatePicker, Modal } from 'antd'
 import { useSelector } from 'react-redux'
 import useCurrency from '../hooks/useCurrency'
 import moment from 'moment'
+import history from '../../history'
+
+const url = 'http://localhost:3000' || 'https://gracious-bell-739599.netlify.app'
 
 const SaveCart = props => {
   const [delivery, setDelivery] = useState(true)
@@ -38,10 +41,10 @@ const SaveCart = props => {
   }
   const info = values => {
     Modal.info({
-      title: 'Forwarding to WhatsApp',
+      title: 'Forwarding to Card Payment',
       content:
-        "When you click OK you'll be redirected to WhatsApp to contact the seller with your sales enquiry so they can confirm stock availability and delivery / collection details.",
-      onOk () {
+        "When you click OK you'll be redirected to a page where you have to put in your card details. for stripe test card, use 424242424....4242....4242",
+      onOk() {
         const payload = {
           contents,
           deliveryOrCollection: values.delivery,
@@ -59,8 +62,8 @@ const SaveCart = props => {
             payload
           )
           .then(res => {
-            const { text, sellerPhone } = res.data
-            window.location = `https://api.whatsapp.com/send?phone=${sellerPhone}&text=${text}`
+            const { cartId } = res.data
+            history.push(`cart/${cartId}`)
           })
           .catch(e => {
             console.log(e)
@@ -73,9 +76,9 @@ const SaveCart = props => {
     // Can not select days before today
     current &&
     current <
-      moment()
-        .endOf('day')
-        .subtract(1, 'day')
+    moment()
+      .endOf('day')
+      .subtract(1, 'day')
 
   const { getFieldDecorator } = props.form
 

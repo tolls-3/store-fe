@@ -3,11 +3,13 @@ import { Card, Button } from 'antd'
 import axios from 'axios'
 import Nav from '../elements/nav'
 import withAuth from '../Auth/axiosWithAuth'
-
+import history from '../../history'
+import { connect } from 'react-redux'
+import { logout } from '../../state/actionCreators'
 const storeURL = 'https://devshop-be.herokuapp.com/api/store'
 const stripeURL = 'https://devshop-be.herokuapp.com/api/auth/stripe'
 
-function Account() {
+function Account({ dispatch }) {
   const [stripeId, setStripeId] = useState('')
   const [storeId, setStoreId] = useState('')
   useEffect(() => {
@@ -33,6 +35,11 @@ function Account() {
         console.log(err)
       })
   }
+  const handleLogout = () => {
+    // delete token from local storage and redirect to login
+    dispatch(logout())
+    history.push('/')
+  }
 
   return (
     <div className='seller-account'>
@@ -53,9 +60,17 @@ function Account() {
         ) : (
             <Button onClick={connectStripe}>Connect to Stripe</Button>
           )}
+        <Button onClick={handleLogout} htmlType='button'>
+          Logout
+      </Button>
       </div>
     </div>
   )
 }
 
-export default Account
+const mapStateToProps = state => ({
+  isLoading: state.user.isLoading,
+  imageUrl: state.user.user.imageUrl
+})
+
+export default connect(mapStateToProps, null)(Account)
